@@ -131,37 +131,28 @@
 * Once in GDB and connected to QEMU these commands can be used:
 
 
-* 
-`layout split` to see the C code, the disassembled code in Assembly, and the command line.
+* `layout split` to see the C code, the disassembled code in Assembly, and the command line.
 
 
-* 
-`b function` to tell GDB to stop once function is called (`b` is for break).
+* `b function` to tell GDB to stop once function is called (`b` is for break).
 
 
-* 
-`c` to tell the CPU to continue until the next breakpoint.
+* `c` to tell the CPU to continue until the next breakpoint.
 
 
-* 
-`si` to tell the CPU to execute the next hardware instruction (this command works also to debug assembly code).
+* `si` to tell the CPU to execute the next hardware instruction (this command works also to debug assembly code).
 
 
-* 
-`n` to execute the next C line (if there is a function call the function gets executed and the debugger stops at the next line).
+* `n` to execute the next C line (if there is a function call the function gets executed and the debugger stops at the next line).
 
 
-* 
-`s` like next but if there is a function call it gets executed line by line.
+* `s` like next but if there is a function call it gets executed line by line.
 
 
-* 
-`p variable` to print to the console the current value of the variable.
+* `p variable` to print to the console the current value of the variable.
 
 
-* 
-`p/x $register_name` to print to the console the current value of the register (`/x` to print in hexadecimal).
+* `p/x $register_name` to print to the console the current value of the register (`/x` to print in hexadecimal).
 
 
-* 
-`x/10c variable` to print to the console the first `n` (in this case 10) bytes decoded as characters at the address of memory saved in the variable.
+* `x/10c variable` to print to the console the first `n` (in this case 10) bytes decoded as characters at the address of memory saved in the variable.
