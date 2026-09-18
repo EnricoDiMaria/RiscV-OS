@@ -1,0 +1,10 @@
+
+*.o
+*.out
+*.elf
+*.bin
+*.asm.bin
+build/
+target/
+.DS_Store
+*.swp
