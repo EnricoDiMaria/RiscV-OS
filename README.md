@@ -84,3 +84,49 @@ Once in GDB and connected to QEMU, these commands can be used:
 - `p variable` — to print to the console the current value of the variable
 - `p/x $register_name` — to print to the console the current value of the register (`/x` to print in hexadecimal)
 - `x/10c variable` — to print to the console the first n (in this case 10) bytes decoded as characters at the address of memory saved in the variable
+
+## Roadmap
+
+Ordered by priority. Checked items are done.
+
+- [ ] **1. Quick fixes** — small changes that make the system much more debuggable:
+  - [ ] `panic_printf`: always drain the TX buffer with a polling loop at the end.
+        Inside a trap `SIE=0`, so the TX interrupt can never fire and the message
+        would stay in the buffer forever (`was_idle == false` case). Also the
+        `UART_reset_o()` line currently is a declaration, not a call: actually
+        call it before draining.
+  - [ ] Unify the `syscall()` signature: `user.h` declares `(sysno, arg0, arg1, arg2)`
+        but `user.c` declares `(arg0, arg1, arg2, sysno)`. It only works by
+        coincidence today. Keep one declaration in `user.h` and add
+        `#define SYS_PUTCHAR 1`.
+  - [ ] Enable the FPU in `boot.s` (`mstatus.FS = Initial`, set bit 13) or compile
+        with `-march=rv64imac -mabi=lp64`: with `rv64gc`/`lp64d` the first
+        floating-point instruction would raise an illegal instruction.
+  - [ ] `alloc_pages`: bound check against `__ram_end__` with a clean `PANIC`
+        instead of relying on a store access fault to catch out-of-memory.
+
+- [ ] **2. Console input** — the step that turns the shell into a real shell:
+  - [ ] Enable RX interrupts (`IER |= 1` in `UART_init`)
+  - [ ] In the trap handler (`ir == 10` branch), when `LSR & 1` read RBR and push
+        into a second ring buffer (separate from the TX one)
+  - [ ] `SYS_GETCHAR` (returns `-1` if the buffer is empty) + `getchar()` in user space
+  - [ ] Shell main loop: prompt, echo, line parsing
+        (note: QEMU sends `\r` for Enter, not `\n`)
+
+- [ ] **3. `SYS_EXIT` + process reclaim** — mark the exiting process `PROC_UNUSED`
+        and switch away from the syscall handler; later, add `free_pages` so the
+        allocator can reuse the pages of dead processes.
+
+- [ ] **4. `SYS_PRINT` (write a whole buffer)** — one `ecall` per string instead of
+        one per character; introduces the problem of validating user pointers
+        (the kernel must check that the range really belongs to user space
+        before copying it).
+
+- [ ] **5. Preemptive scheduling via timer** — the most significant change:
+        requires saving `sstatus` (and eventually FP state) in the trap frame
+        and deciding how to perform the context switch from inside a trap.
+
+- [ ] **6. Extras** — `__free_ram_end__` read from the device tree at boot,
+        W^X for user pages, `%b` in `printf`, shrink the PLIC mapping from
+        4 MiB to the 3 pages actually used, idle process with a `wfi` loop
+        as its `ra`, ...
