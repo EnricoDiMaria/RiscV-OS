@@ -37,6 +37,7 @@ paddr_t alloc_pages(uint64_t n) { //this function allocates n pages of memory an
 
 void panic_printf(const char *str, ...) {
     va_list vargs;
+    void UART_reset_o(); //to stop the interrupt when a new character is sent to the UART
     va_start(vargs, str);
 
     int was_idle = !UART_o_enabled();
@@ -100,7 +101,8 @@ void set_sepc(uint64_t val) {
 void printc(char ch){//print to console function
     buffer_add(ch);
 
-    if (UART_wReady()) {
+    if (!UART_o_enabled()) { //to kick start only if the writing is not already started
+        while (!UART_wReady());
         UART->THR = buffer_next();
         UART_enable_o();
     }

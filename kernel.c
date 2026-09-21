@@ -111,6 +111,8 @@ void trap_handler(struct trap_frame *f, uint64_t scause, uint64_t stval, uint64_
         
                 PLIC_interrupt_end(ir);
                 break;
+            
+            default: PANIC("external exception scause=%x, stval=%x, sepc=%x\n", scause, stval, sepc);
         
     }
         break;

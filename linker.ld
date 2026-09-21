@@ -25,12 +25,14 @@ SECTIONS {
     . = ALIGN(16);
     __global_pointer$ = . + 0x800; /*0x800 is 2048, the maximum number for a 12 bit immediate (offset)*/
     /*the gp label is stored in the gp register that saves the address of .data+2048 (center of the section), so the compiler can use this to access different position in data with a positive or negative offset more efficiently. For longer distances more than one instruction (to load an immediate larger than 12 bits) will be needed.*/
+    *(.sdata .sdata.*)
     *(.data .data.*)
   } > ram
 
   .bss : {
         . = ALIGN(16);
         __bss_start__ = .; /*the linker puts a label at this address*/
+        *(.sbss .sbss.*)
         *(.bss .bss.*)
         __bss_end__ = .;
     } > ram
@@ -49,9 +51,6 @@ SECTIONS {
 
 
 /*to be implemented
-.sdata
-.sbss
-these are smaller section used to store smaller variables (like pointers, flags or contants) that are totally addressable with a 12 bit immediate (thus more efficiently).
 
 use the device tree at boot to read the memory map and dinamically set a free ram end variable
 */

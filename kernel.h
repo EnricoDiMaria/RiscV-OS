@@ -9,7 +9,7 @@
 //additional arguments
 #define PANIC(fmt, ...)                                                        \
     do {                                                                       \
-        printf("PANIC: %s:%d: " fmt "\n", __FILE__, __LINE__, ##__VA_ARGS__);  \
+        panic_printf("PANIC: %s:%d: " fmt "\n", __FILE__, __LINE__, ##__VA_ARGS__);  \
         while (1) {}                                                       \
     } while (0) // do-while is commonly used to define macros because it cannot produce errors or uninteded behaviours when combined with statements like if
 
