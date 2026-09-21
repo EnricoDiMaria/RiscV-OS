@@ -1,0 +1,159 @@
+
+There are no discarded input sections
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+                0x0000000001000000                . = 0x1000000
+
+.text           0x0000000001000000      0x6e4
+ *(.text.start)
+ .text.start    0x0000000001000000       0x18 user_s.o
+                0x0000000001000000                start
+                0x0000000001000010                exit
+                0x0000000001000012                syscall
+ *(.text .text.*)
+ .text          0x0000000001000018       0x1e shell.o
+                0x0000000001000018                main
+ .text          0x0000000001000036       0x2a user.o
+                0x0000000001000036                printc
+ .text          0x0000000001000060        0x0 user_s.o
+ .text          0x0000000001000060      0x684 common.o
+                0x0000000001000060                memset
+                0x00000000010000b0                memcpy
+                0x0000000001000112                strcpy
+                0x000000000100016c                strcpy_s
+                0x000000000100021c                strcmp
+                0x0000000001000294                itoa
+                0x0000000001000450                htoa
+                0x00000000010004f6                printf
+
+.rodata         0x00000000010006e8       0x31
+ *(.rodata .rodata.*)
+ .rodata        0x00000000010006e8       0x19 shell.o
+ *fill*         0x0000000001000701        0x7 
+ .rodata        0x0000000001000708       0x11 common.o
+
+.rela.dyn       0x0000000001000720        0x0
+ .rela.text.start
+                0x0000000001000720        0x0 shell.o
+
+.data           0x0000000001000720        0x0
+ *(.data .data.*)
+ .data          0x0000000001000720        0x0 shell.o
+ .data          0x0000000001000720        0x0 user.o
+ .data          0x0000000001000720        0x0 user_s.o
+ .data          0x0000000001000720        0x0 common.o
+
+.bss            0x0000000001000720    0x10030
+ *(.bss .bss.* .sbss .sbss.*)
+ .bss           0x0000000001000720        0x0 shell.o
+ .bss           0x0000000001000720        0x0 user.o
+ .bss           0x0000000001000720        0x0 user_s.o
+ .bss           0x0000000001000720       0x29 common.o
+                0x0000000001000750                . = ALIGN (0x10)
+ *fill*         0x0000000001000749        0x7 
+                0x0000000001010750                . = (. + 0x10000)
+ *fill*         0x0000000001000750    0x10000 
+                0x0000000001010750                __U_stack_top = .
+                0x0000000000000001                ASSERT ((. < 0x1800000), too large executable)
+LOAD shell.o
+LOAD user.o
+LOAD user_s.o
+LOAD common.o
+OUTPUT(shell.elf elf64-littleriscv)
+
+.debug_info     0x0000000000000000      0x635
+ .debug_info    0x0000000000000000       0x8f shell.o
+ .debug_info    0x000000000000008f       0xac user.o
+ .debug_info    0x000000000000013b       0x28 user_s.o
+ .debug_info    0x0000000000000163      0x4d2 common.o
+
+.debug_abbrev   0x0000000000000000      0x25c
+ .debug_abbrev  0x0000000000000000       0x6f shell.o
+ .debug_abbrev  0x000000000000006f       0x78 user.o
+ .debug_abbrev  0x00000000000000e7       0x14 user_s.o
+ .debug_abbrev  0x00000000000000fb      0x161 common.o
+
+.debug_aranges  0x0000000000000000       0xc0
+ .debug_aranges
+                0x0000000000000000       0x30 shell.o
+ .debug_aranges
+                0x0000000000000030       0x30 user.o
+ .debug_aranges
+                0x0000000000000060       0x30 user_s.o
+ .debug_aranges
+                0x0000000000000090       0x30 common.o
+
+.debug_line     0x0000000000000000      0x753
+ .debug_line    0x0000000000000000       0x5f shell.o
+ .debug_line    0x000000000000005f       0x5f user.o
+ .debug_line    0x00000000000000be       0x66 user_s.o
+ .debug_line    0x0000000000000124      0x62f common.o
+
+.debug_str      0x0000000000000000      0x1d1
+ .debug_str     0x0000000000000000      0x1d1 shell.o
+                                         0xff (size before relaxing)
+ .debug_str     0x00000000000001d1        0x0 user.o
+                                        0x102 (size before relaxing)
+ .debug_str     0x00000000000001d1        0x0 user_s.o
+                                         0x42 (size before relaxing)
+ .debug_str     0x00000000000001d1        0x0 common.o
+                                        0x1a6 (size before relaxing)
+
+.debug_line_str
+                0x0000000000000000       0x5c
+ .debug_line_str
+                0x0000000000000000       0x5c shell.o
+                                         0x77 (size before relaxing)
+ .debug_line_str
+                0x000000000000005c        0x0 user.o
+                                         0x72 (size before relaxing)
+ .debug_line_str
+                0x000000000000005c        0x0 user_s.o
+                                         0x34 (size before relaxing)
+ .debug_line_str
+                0x000000000000005c        0x0 common.o
+                                         0x7a (size before relaxing)
+
+.comment        0x0000000000000000       0x26
+ .comment       0x0000000000000000       0x26 shell.o
+                                         0x27 (size before relaxing)
+ .comment       0x0000000000000026        0x0 user.o
+                                         0x27 (size before relaxing)
+ .comment       0x0000000000000026        0x0 common.o
+                                         0x27 (size before relaxing)
+
+.note.GNU-stack
+                0x0000000000000000        0x0
+ .note.GNU-stack
+                0x0000000000000000        0x0 shell.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 user.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 common.o
+
+.riscv.attributes
+                0x0000000000000000       0x74
+ .riscv.attributes
+                0x0000000000000000       0x74 shell.o
+ .riscv.attributes
+                0x0000000000000074       0x74 user.o
+ .riscv.attributes
+                0x00000000000000e8       0x72 user_s.o
+ .riscv.attributes
+                0x000000000000015a       0x74 common.o
+
+.debug_frame    0x0000000000000000      0x218
+ .debug_frame   0x0000000000000000       0x40 shell.o
+ .debug_frame   0x0000000000000040       0x40 user.o
+ .debug_frame   0x0000000000000080      0x198 common.o
+
+.debug_rnglists
+                0x0000000000000000       0x22
+ .debug_rnglists
+                0x0000000000000000       0x22 common.o

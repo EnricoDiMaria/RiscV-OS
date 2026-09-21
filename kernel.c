@@ -35,7 +35,6 @@ void kernel_main(void) {
 
     printf("Hello World! RISC-V kernel in development...\n");
     printf("Test numero %d\n", 2);
-
     process_init();
     
     //proc_a = create_process((uint64_t) proc_a_entry, sizeA);

@@ -31,16 +31,18 @@ paddr_t alloc_pages(uint64_t n) { //this function allocates n pages of memory an
     paddr_t paddr = next_paddr;
     next_paddr += n * PAGE_SIZE;
 
+    if (next_paddr + n * PAGE_SIZE > (paddr_t) __ram_end__)
+    PANIC("alloc_pages: out of memory");
+
     memset((void *) paddr, 0, n * PAGE_SIZE); //the function has to return a clean portion of memory set at zero, because map_page uses a bit of this area of memory in order to declare if the entry is valid or not inizialized
     return paddr;
 }
 
 void panic_printf(const char *str, ...) {
     va_list vargs;
-    void UART_reset_o(); //to stop the interrupt when a new character is sent to the UART
+    UART_reset_o(); //to stop the interrupt when a new character is sent to the UART
     va_start(vargs, str);
 
-    int was_idle = !UART_o_enabled();
     while(*str) {
         if (*str == '%') {
             str++;
@@ -85,11 +87,9 @@ void panic_printf(const char *str, ...) {
     }
     end: 
     va_end(vargs); //to clean memory
-    if (was_idle) {
-        while(!buffer_is_empty()) {
-            while(!UART_wReady()); //to wait until the other character is sent
-            UART->THR = buffer_next(); 
-        }
+    while(!buffer_is_empty()) {
+        while(!UART_wReady()); //to wait until the other character is sent
+        UART->THR = buffer_next(); 
     }
     return;
 }

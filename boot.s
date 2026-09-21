@@ -32,7 +32,7 @@ csrw pmpcfg0, t0 #to grant S-mode Read, Write and Execution on all memory
 li t0, -1 
 csrw pmpaddr0, t0 #with t0 all ones we tell the CPU that S-mode can access the whole ram memory
 
-li t0, (0b01 << 11) | (1<<5) | (1<<1)#the kernel will be executed in S-mode (01 in 11) and SPIE and SIE are activated
+li t0, (0b01 << 11) | (1 << 13) | (1<<5) | (1<<1)#the kernel will be executed in S-mode (01 in 11) and SPIE and SIE are activated and floating point (13)
 csrw mstatus, t0
 
 csrw satp, zero #virtual memory is for now disabled
