@@ -1,12 +1,16 @@
 #include "kfunctions.h"
 #include "UART.h"
-
+#include "kernel.h"
 
 #define BUFFER_SIZE 256
 
 static volatile uint8_t buffer[BUFFER_SIZE]; //a volatile variable could change at any time and no action has to be taken
 static volatile uint8_t head = 0; //because it's uint8_t when the value is 255 the next one will automatically be 0, so no need to implements the module operation
 static volatile uint8_t tail = 0; 
+
+static volatile uint8_t rbx[BUFFER_SIZE];
+static volatile uint8_t rbx_h = 0;
+static volatile uint8_t rbx_t = 0;
 
 int buffer_is_empty(){
     return head == tail;
@@ -24,6 +28,23 @@ void buffer_add(char c) {
 uint8_t buffer_next(){
     if (buffer_is_empty()) return 0;
     return buffer[tail++];
+}
+
+int rbx_is_empty(){
+    return rbx_h == rbx_t;
+}
+
+int rbx_is_full() {
+    return (uint8_t)(rbx_h + 1) == rbx_t;
+}
+
+void rbx_add(char ch) {
+    rbx[rbx_h++] = ch;
+}
+
+uint8_t rbx_next(){
+    if (rbx_is_empty()) return 0;
+    return rbx[rbx_t++];
 }
 
 paddr_t alloc_pages(uint64_t n) { //this function allocates n pages of memory and returns the starting address
@@ -89,7 +110,7 @@ void panic_printf(const char *str, ...) {
     va_end(vargs); //to clean memory
     while(!buffer_is_empty()) {
         while(!UART_wReady()); //to wait until the other character is sent
-        UART->THR = buffer_next(); 
+        UART->THR_RBR = buffer_next(); 
     }
     return;
 }
@@ -103,7 +124,7 @@ void printc(char ch){//print to console function
 
     if (!UART_o_enabled()) { //to kick start only if the writing is not already started
         while (!UART_wReady());
-        UART->THR = buffer_next();
+        UART->THR_RBR = buffer_next();
         UART_enable_o();
     }
     return;

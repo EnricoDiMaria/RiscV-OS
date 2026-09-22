@@ -104,8 +104,21 @@ void trap_handler(struct trap_frame *f, uint64_t scause, uint64_t stval, uint64_
                 uint32_t ir = PLIC_interrupt_request();
 
                 if (ir == 10) {
-                if (!buffer_is_empty()) UART->THR = buffer_next();
-                else UART_reset_o();
+                    for (;;) { //to not call a interrupt for every single character
+                    int iid = UART_interrupt_id();
+                    if (iid == UART_IID_RX_AVAIL) {
+                        while (UART_rReady()) {
+                            uint8_t ch = UART->THR_RBR;
+                            ch = (ch == '\r') ? '\n' : ch;
+                            rbx_add(ch);      //for getchar
+                            printc(ch);       //to read on the terminal what I just typed
+                            }
+                        } 
+                    else if (iid == UART_IID_TX_EMPTY) {
+                        if (!buffer_is_empty()) UART->THR_RBR = buffer_next();
+                        else UART_reset_o();} 
+                    else break;
+                    }
                 }
         
                 PLIC_interrupt_end(ir);

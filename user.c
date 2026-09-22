@@ -1,5 +1,9 @@
 #include "user.h"
 
 void printc(char ch) { 
-    syscall(1, ch, 0, 0);
+    syscall(SYS_PRINTC, ch, 0, 0);
+}
+
+long getc(void) {
+    syscall(SYS_GETC, 0, 0, 0);
 }

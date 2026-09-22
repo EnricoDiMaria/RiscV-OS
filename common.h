@@ -33,7 +33,5 @@ char *itoa(char *str, int num);
 char *htoa(char *str, uint64_t num);
 
 void printf(const char *str, ...);
-int buffer_is_empty();
-uint8_t buffer_next();
 
 #endif

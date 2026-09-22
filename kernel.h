@@ -48,4 +48,7 @@ struct trap_frame {
     uint64_t sp;
 } __attribute__((packed));
 
+#define SYS_PRINTC 1
+#define SYS_GETC 2
+
 #endif
