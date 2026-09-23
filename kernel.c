@@ -66,8 +66,16 @@ void kernel_main(void) {
 
 void syscall_handler(struct trap_frame *f) {
     switch (f->a0) {
-        case 1: //SYS_PUTCHAR
+        case SYS_PRINTC:
             printc((char) f->a1);
+            break;
+        case SYS_GETC:
+            f->a0 = getc();
+            break;
+        case SYS_EXIT:
+            break;
+        case SYS_YIELD:
+            yield();
             break;
         default:
             PANIC("unexpected syscall a0=%x\n", f->a0);
@@ -111,7 +119,7 @@ void trap_handler(struct trap_frame *f, uint64_t scause, uint64_t stval, uint64_
                             uint8_t ch = UART->THR_RBR;
                             ch = (ch == '\r') ? '\n' : ch;
                             rbx_add(ch);      //for getchar
-                            printc(ch);       //to read on the terminal what I just typed
+                            //printc(ch);       //to read on the terminal what I just typed
                             }
                         } 
                     else if (iid == UART_IID_TX_EMPTY) {

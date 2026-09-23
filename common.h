@@ -24,6 +24,11 @@ typedef uint64_t vaddr_t; //virtual memory address
 #define offsetof(type, member)   __builtin_offsetof(type, member) //it returns the distance from the start of the struct and the start of the member specified
 //used because assembly cannot comprehend structs so it needs the offset of every member
 
+#define SYS_PRINTC 1
+#define SYS_GETC 2
+#define SYS_EXIT 3
+#define SYS_YIELD 4
+
 void *memset(void *target, char c, size_t n);
 void *memcpy(void *dst, const void *src, size_t n);
 char *strcpy(char *dst, const char *src);

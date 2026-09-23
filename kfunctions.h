@@ -21,12 +21,13 @@ uint8_t buffer_next();
 void rbx_add(char ch);
 int rbx_is_full();
 void rbx_add(char ch) ;
-uint8_t rbx_next();
+int rbx_next();
 
 paddr_t alloc_pages(uint64_t n);
 
 void panic_printf(const char *str, ...);
 void set_sepc(uint64_t val);
 void printc(char ch);
+int getc(void);
 
 #endif

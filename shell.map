@@ -10,57 +10,58 @@ Linker script and memory map
 
                 0x0000000001000000                . = 0x1000000
 
-.text           0x0000000001000000      0x704
+.text           0x0000000001000000      0x7e4
  *(.text.start)
  .text.start    0x0000000001000000       0x18 user_s.o
                 0x0000000001000000                start
                 0x0000000001000010                exit
                 0x0000000001000012                syscall
  *(.text .text.*)
- .text          0x0000000001000018       0x1e shell.o
+ .text          0x0000000001000018       0xe0 shell.o
                 0x0000000001000018                main
- .text          0x0000000001000036       0x4a user.o
-                0x0000000001000036                printc
-                0x0000000001000060                getc
- .text          0x0000000001000080        0x0 user_s.o
- .text          0x0000000001000080      0x684 common.o
-                0x0000000001000080                memset
-                0x00000000010000d0                memcpy
-                0x0000000001000132                strcpy
-                0x000000000100018c                strcpy_s
-                0x000000000100023c                strcmp
-                0x00000000010002b4                itoa
-                0x0000000001000470                htoa
-                0x0000000001000516                printf
+ .text          0x00000000010000f8       0x68 user.o
+                0x00000000010000f8                printc
+                0x0000000001000122                getc
+                0x0000000001000142                yield
+ .text          0x0000000001000160        0x0 user_s.o
+ .text          0x0000000001000160      0x684 common.o
+                0x0000000001000160                memset
+                0x00000000010001b0                memcpy
+                0x0000000001000212                strcpy
+                0x000000000100026c                strcpy_s
+                0x000000000100031c                strcmp
+                0x0000000001000394                itoa
+                0x0000000001000550                htoa
+                0x00000000010005f6                printf
 
-.rodata         0x0000000001000708       0x31
+.rodata         0x00000000010007e8       0x69
  *(.rodata .rodata.*)
- .rodata        0x0000000001000708       0x19 shell.o
- *fill*         0x0000000001000721        0x7 
- .rodata        0x0000000001000728       0x11 common.o
+ .rodata        0x00000000010007e8       0x51 shell.o
+ *fill*         0x0000000001000839        0x7 
+ .rodata        0x0000000001000840       0x11 common.o
 
-.rela.dyn       0x0000000001000740        0x0
+.rela.dyn       0x0000000001000858        0x0
  .rela.text.start
-                0x0000000001000740        0x0 shell.o
+                0x0000000001000858        0x0 shell.o
 
-.data           0x0000000001000740        0x0
+.data           0x0000000001000858        0x0
  *(.data .data.*)
- .data          0x0000000001000740        0x0 shell.o
- .data          0x0000000001000740        0x0 user.o
- .data          0x0000000001000740        0x0 user_s.o
- .data          0x0000000001000740        0x0 common.o
+ .data          0x0000000001000858        0x0 shell.o
+ .data          0x0000000001000858        0x0 user.o
+ .data          0x0000000001000858        0x0 user_s.o
+ .data          0x0000000001000858        0x0 common.o
 
-.bss            0x0000000001000740    0x10030
+.bss            0x0000000001000858    0x10038
  *(.bss .bss.* .sbss .sbss.*)
- .bss           0x0000000001000740        0x0 shell.o
- .bss           0x0000000001000740        0x0 user.o
- .bss           0x0000000001000740        0x0 user_s.o
- .bss           0x0000000001000740       0x29 common.o
-                0x0000000001000770                . = ALIGN (0x10)
- *fill*         0x0000000001000769        0x7 
-                0x0000000001010770                . = (. + 0x10000)
- *fill*         0x0000000001000770    0x10000 
-                0x0000000001010770                __U_stack_top = .
+ .bss           0x0000000001000858        0x0 shell.o
+ .bss           0x0000000001000858        0x0 user.o
+ .bss           0x0000000001000858        0x0 user_s.o
+ .bss           0x0000000001000858       0x29 common.o
+                0x0000000001000890                . = ALIGN (0x10)
+ *fill*         0x0000000001000881        0xf 
+                0x0000000001010890                . = (. + 0x10000)
+ *fill*         0x0000000001000890    0x10000 
+                0x0000000001010890                __U_stack_top = .
                 0x0000000000000001                ASSERT ((. < 0x1800000), too large executable)
 LOAD shell.o
 LOAD user.o
@@ -68,17 +69,17 @@ LOAD user_s.o
 LOAD common.o
 OUTPUT(shell.elf elf64-littleriscv)
 
-.debug_info     0x0000000000000000      0x65a
- .debug_info    0x0000000000000000       0x8f shell.o
- .debug_info    0x000000000000008f       0xd1 user.o
- .debug_info    0x0000000000000160       0x28 user_s.o
- .debug_info    0x0000000000000188      0x4d2 common.o
+.debug_info     0x0000000000000000      0x71a
+ .debug_info    0x0000000000000000      0x13c shell.o
+ .debug_info    0x000000000000013c       0xe4 user.o
+ .debug_info    0x0000000000000220       0x28 user_s.o
+ .debug_info    0x0000000000000248      0x4d2 common.o
 
-.debug_abbrev   0x0000000000000000      0x277
- .debug_abbrev  0x0000000000000000       0x6f shell.o
- .debug_abbrev  0x000000000000006f       0x93 user.o
- .debug_abbrev  0x0000000000000102       0x14 user_s.o
- .debug_abbrev  0x0000000000000116      0x161 common.o
+.debug_abbrev   0x0000000000000000      0x328
+ .debug_abbrev  0x0000000000000000      0x107 shell.o
+ .debug_abbrev  0x0000000000000107       0xac user.o
+ .debug_abbrev  0x00000000000001b3       0x14 user_s.o
+ .debug_abbrev  0x00000000000001c7      0x161 common.o
 
 .debug_aranges  0x0000000000000000       0xc0
  .debug_aranges
@@ -90,36 +91,43 @@ OUTPUT(shell.elf elf64-littleriscv)
  .debug_aranges
                 0x0000000000000090       0x30 common.o
 
-.debug_line     0x0000000000000000      0x76b
- .debug_line    0x0000000000000000       0x5f shell.o
- .debug_line    0x000000000000005f       0x77 user.o
- .debug_line    0x00000000000000d6       0x66 user_s.o
- .debug_line    0x000000000000013c      0x62f common.o
+.debug_rnglists
+                0x0000000000000000       0x50
+ .debug_rnglists
+                0x0000000000000000       0x2e shell.o
+ .debug_rnglists
+                0x000000000000002e       0x22 common.o
 
-.debug_str      0x0000000000000000      0x1df
- .debug_str     0x0000000000000000      0x1df shell.o
-                                         0xff (size before relaxing)
- .debug_str     0x00000000000001df        0x0 user.o
-                                        0x110 (size before relaxing)
- .debug_str     0x00000000000001df        0x0 user_s.o
-                                         0x42 (size before relaxing)
- .debug_str     0x00000000000001df        0x0 common.o
+.debug_line     0x0000000000000000      0x834
+ .debug_line    0x0000000000000000      0x110 shell.o
+ .debug_line    0x0000000000000110       0x8f user.o
+ .debug_line    0x000000000000019f       0x66 user_s.o
+ .debug_line    0x0000000000000205      0x62f common.o
+
+.debug_str      0x0000000000000000      0x1dd
+ .debug_str     0x0000000000000000      0x1dd shell.o
+                                        0x139 (size before relaxing)
+ .debug_str     0x00000000000001dd        0x0 user.o
+                                        0x10d (size before relaxing)
+ .debug_str     0x00000000000001dd        0x0 user_s.o
+                                         0x34 (size before relaxing)
+ .debug_str     0x00000000000001dd        0x0 common.o
                                         0x1a6 (size before relaxing)
 
 .debug_line_str
-                0x0000000000000000       0x5c
+                0x0000000000000000       0x4e
  .debug_line_str
-                0x0000000000000000       0x5c shell.o
-                                         0x77 (size before relaxing)
+                0x0000000000000000       0x4e shell.o
+                                         0x62 (size before relaxing)
  .debug_line_str
-                0x000000000000005c        0x0 user.o
-                                         0x72 (size before relaxing)
+                0x000000000000004e        0x0 user.o
+                                         0x56 (size before relaxing)
  .debug_line_str
-                0x000000000000005c        0x0 user_s.o
-                                         0x34 (size before relaxing)
+                0x000000000000004e        0x0 user_s.o
+                                         0x26 (size before relaxing)
  .debug_line_str
-                0x000000000000005c        0x0 common.o
-                                         0x7a (size before relaxing)
+                0x000000000000004e        0x0 common.o
+                                         0x5e (size before relaxing)
 
 .comment        0x0000000000000000       0x26
  .comment       0x0000000000000000       0x26 shell.o
@@ -149,12 +157,7 @@ OUTPUT(shell.elf elf64-littleriscv)
  .riscv.attributes
                 0x000000000000015a       0x74 common.o
 
-.debug_frame    0x0000000000000000      0x248
- .debug_frame   0x0000000000000000       0x40 shell.o
- .debug_frame   0x0000000000000040       0x70 user.o
- .debug_frame   0x00000000000000b0      0x198 common.o
-
-.debug_rnglists
-                0x0000000000000000       0x22
- .debug_rnglists
-                0x0000000000000000       0x22 common.o
+.debug_frame    0x0000000000000000      0x270
+ .debug_frame   0x0000000000000000       0x38 shell.o
+ .debug_frame   0x0000000000000038       0xa0 user.o
+ .debug_frame   0x00000000000000d8      0x198 common.o

@@ -42,18 +42,19 @@ void rbx_add(char ch) {
     rbx[rbx_h++] = ch;
 }
 
-uint8_t rbx_next(){
-    if (rbx_is_empty()) return 0;
+int rbx_next(){
+    if (rbx_is_empty()) return -1;
     return rbx[rbx_t++];
 }
 
 paddr_t alloc_pages(uint64_t n) { //this function allocates n pages of memory and returns the starting address
     static paddr_t next_paddr = (paddr_t) __free_ram__;
     paddr_t paddr = next_paddr;
-    next_paddr += n * PAGE_SIZE;
 
     if (next_paddr + n * PAGE_SIZE > (paddr_t) __ram_end__)
     PANIC("alloc_pages: out of memory");
+    
+    next_paddr += n * PAGE_SIZE;
 
     memset((void *) paddr, 0, n * PAGE_SIZE); //the function has to return a clean portion of memory set at zero, because map_page uses a bit of this area of memory in order to declare if the entry is valid or not inizialized
     return paddr;
@@ -129,3 +130,8 @@ void printc(char ch){//print to console function
     }
     return;
 }
+
+int getc() {
+    return rbx_next();
+}
+
