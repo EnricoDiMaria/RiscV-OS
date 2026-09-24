@@ -11,3 +11,8 @@ int getc(void) {
 void yield(void) {
     syscall(SYS_YIELD, 0, 0, 0);
 }
+
+void exit(void) {
+    syscall(SYS_EXIT, 0, 0, 0);
+    for(;;);
+}

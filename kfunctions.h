@@ -26,7 +26,6 @@ int rbx_next();
 paddr_t alloc_pages(uint64_t n);
 
 void panic_printf(const char *str, ...);
-void set_sepc(uint64_t val);
 void printc(char ch);
 int getc(void);
 

@@ -116,10 +116,6 @@ void panic_printf(const char *str, ...) {
     return;
 }
 
-void set_sepc(uint64_t val) {
-    asm volatile("csrw sepc, %0" :: "r"(val));
-}
-
 void printc(char ch){//print to console function
     buffer_add(ch);
 

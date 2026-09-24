@@ -45,7 +45,9 @@ struct trap_frame {
     uint64_t s9;
     uint64_t s10;
     uint64_t s11;
-    uint64_t sp;
+    uint64_t epc;
+    uint64_t status;
+    uint64_t user_sp;
 } __attribute__((packed));
 
 #define SYS_PRINTC 1

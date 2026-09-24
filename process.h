@@ -9,6 +9,7 @@
 
 #define PROC_UNUSED   0   // Unused process control structure
 #define PROC_RUNNABLE 1   // Runnable process
+#define PROC_EXITED 2
 
 
 extern struct process *current_proc; //currently running process
@@ -19,5 +20,7 @@ void yield(void);
 void switch_context(uint64_t *prev_sp, uint64_t *next_sp);
 void switch_page_table(uint64_t satp_value, uint64_t sscratch_value);
 void delay(int n);
+int process_id(void);
+void exit_process(void);
 
 #endif

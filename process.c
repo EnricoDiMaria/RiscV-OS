@@ -132,3 +132,11 @@ void yield(void) {
     switch_page_table(SATP_SV39 | ((uint64_t) next->page_table / PAGE_SIZE), (uint64_t) &next->stack[sizeof(next->stack)]);
     switch_context(&prev->sp, &next->sp);
 }
+
+int process_id(void) {
+    return current_proc->pid;
+}
+
+void exit_process() {
+    current_proc->state = PROC_EXITED;
+}

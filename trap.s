@@ -4,7 +4,7 @@
 
 exception_handler:
 csrrw sp, sscratch, sp  #from user stack to kernel stack saved in sscratch
-addi sp, sp, -8 * 32 #16 bit aligned
+addi sp, sp, -8 * 34 #16 bit aligned
 sd ra, 8*0(sp)
 sd gp, 8*1(sp)
 sd tp, 8*2(sp)
@@ -35,15 +35,24 @@ sd s8, 8*26(sp)
 sd s9, 8*27(sp)
 sd s10, 8*28(sp)
 sd s11, 8*29(sp)
-
-addi t0, sp, 8*32
-sd   t0, 8*30(sp) #it will be only used for debugging and in the trap_frame
+csrr t0, sepc
+sd t0, 8*30(sp)
+csrr t0, sstatus
+sd t0, 8*31(sp)
+csrr t0, sscratch
+sd t0, 8*32(sp)
 
 mv a0, sp
 csrr a1, scause
 csrr a2, stval
-csrr a3, sepc 
 call trap_handler
+
+ld t0, 8*30(sp)
+ld t1, 8*31(sp)
+ld t2, 8*32(sp)
+csrw sepc, t0
+csrw sstatus, t1
+csrw sscratch, t2
 
 ld ra, 8*0(sp)
 ld gp, 8*1(sp)
@@ -76,8 +85,8 @@ ld s9, 8*27(sp)
 ld s10, 8*28(sp)
 ld s11, 8*29(sp)
 
-addi sp, sp, 8*32
-
+addi sp, sp, 8*34
 csrrw sp, sscratch, sp
+
 sret #sret and not ret is used because this function is called in when a trap/exception happens so sret not only returns to where
 #the program was interrupted but also restores CSR registers values

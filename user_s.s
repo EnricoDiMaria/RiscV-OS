@@ -7,8 +7,8 @@ la sp, __U_stack_top
 call main
 call exit
 
-.globl exit
-exit:
+#.globl exit
+#exit:
 inf_loop:
 j inf_loop
 

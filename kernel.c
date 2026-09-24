@@ -73,6 +73,10 @@ void syscall_handler(struct trap_frame *f) {
             f->a0 = getc();
             break;
         case SYS_EXIT:
+            printf("process %d exited\n", process_id());
+            exit_process();
+            yield();
+            PANIC("unreachable");
             break;
         case SYS_YIELD:
             yield();
@@ -82,7 +86,7 @@ void syscall_handler(struct trap_frame *f) {
     }
 }
 
-void trap_handler(struct trap_frame *f, uint64_t scause, uint64_t stval, uint64_t sepc) {
+void trap_handler(struct trap_frame *f, uint64_t scause, uint64_t stval) {
     switch(((scause & 0x8000000000000000ULL) >> 63)) { //to check whether is interrupt or not (64th bit of mcause)
         case(0): //exception
         switch (scause & 0xFF) {
@@ -91,15 +95,15 @@ void trap_handler(struct trap_frame *f, uint64_t scause, uint64_t stval, uint64_
                 break;
             case(7): //Store/AMO access fault
                 if ((paddr_t) stval >= (paddr_t) __ram_end__) PANIC("out of memory: allocator ran past __ram_end__ (addr=%x)\n", stval);
-                else PANIC("store access fault: write to unmapped address=%x, sepc=%x\n", stval, sepc);
+                else PANIC("store access fault: write to unmapped address=%x, sepc=%x\n", stval, f->epc);
                 break;
             case(8): //SCAUSE_ECALL in USER MODE
                 syscall_handler(f);
-                set_sepc(sepc+4);
+                f->epc += 4;
                 break;
             
 
-            default: PANIC("synchronous exception scause=%x, stval=%x, sepc=%x\n", scause, stval, sepc);
+            default: PANIC("synchronous exception scause=%x, stval=%x, sepc=%x\n", scause, stval, f->epc);
             
 
 
@@ -132,12 +136,12 @@ void trap_handler(struct trap_frame *f, uint64_t scause, uint64_t stval, uint64_
                 PLIC_interrupt_end(ir);
                 break;
             
-            default: PANIC("external exception scause=%x, stval=%x, sepc=%x\n", scause, stval, sepc);
+            default: PANIC("external exception scause=%x, stval=%x, sepc=%x\n", scause, stval, f->epc);
         
     }
         break;
 
-        default: PANIC("unexpected trap scause=%x, stval=%x, sepc=%x\n", scause, stval, sepc);
+        default: PANIC("unexpected trap scause=%x, stval=%x, sepc=%x\n", scause, stval, f->epc);
     }
 }
 
