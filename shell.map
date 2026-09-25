@@ -10,58 +10,58 @@ Linker script and memory map
 
                 0x0000000001000000                . = 0x1000000
 
-.text           0x0000000001000000      0x818
+.text           0x0000000001000000      0x87c
  *(.text.start)
  .text.start    0x0000000001000000       0x18 user_s.o
                 0x0000000001000000                start
                 0x0000000001000012                syscall
  *(.text .text.*)
- .text          0x0000000001000018       0xfc shell.o
+ .text          0x0000000001000018      0x160 shell.o
                 0x0000000001000018                main
- .text          0x0000000001000114       0x80 user.o
-                0x0000000001000114                printc
-                0x000000000100013e                getc
-                0x000000000100015e                yield
-                0x000000000100017c                exit
- .text          0x0000000001000194        0x0 user_s.o
- .text          0x0000000001000194      0x684 common.o
-                0x0000000001000194                memset
-                0x00000000010001e4                memcpy
-                0x0000000001000246                strcpy
-                0x00000000010002a0                strcpy_s
-                0x0000000001000350                strcmp
-                0x00000000010003c8                itoa
-                0x0000000001000584                htoa
-                0x000000000100062a                printf
+ .text          0x0000000001000178       0x80 user.o
+                0x0000000001000178                printc
+                0x00000000010001a2                getc
+                0x00000000010001c2                yield
+                0x00000000010001e0                exit
+ .text          0x00000000010001f8        0x0 user_s.o
+ .text          0x00000000010001f8      0x684 common.o
+                0x00000000010001f8                memset
+                0x0000000001000248                memcpy
+                0x00000000010002aa                strcpy
+                0x0000000001000304                strcpy_s
+                0x00000000010003b4                strcmp
+                0x000000000100042c                itoa
+                0x00000000010005e8                htoa
+                0x000000000100068e                printf
 
-.rodata         0x0000000001000818       0x71
+.rodata         0x0000000001000880       0xa1
  *(.rodata .rodata.*)
- .rodata        0x0000000001000818       0x5d shell.o
- *fill*         0x0000000001000875        0x3 
- .rodata        0x0000000001000878       0x11 common.o
+ .rodata        0x0000000001000880       0x8f shell.o
+ *fill*         0x000000000100090f        0x1 
+ .rodata        0x0000000001000910       0x11 common.o
 
-.rela.dyn       0x0000000001000890        0x0
+.rela.dyn       0x0000000001000928        0x0
  .rela.text.start
-                0x0000000001000890        0x0 shell.o
+                0x0000000001000928        0x0 shell.o
 
-.data           0x0000000001000890        0x0
+.data           0x0000000001000928        0x0
  *(.data .data.*)
- .data          0x0000000001000890        0x0 shell.o
- .data          0x0000000001000890        0x0 user.o
- .data          0x0000000001000890        0x0 user_s.o
- .data          0x0000000001000890        0x0 common.o
+ .data          0x0000000001000928        0x0 shell.o
+ .data          0x0000000001000928        0x0 user.o
+ .data          0x0000000001000928        0x0 user_s.o
+ .data          0x0000000001000928        0x0 common.o
 
-.bss            0x0000000001000890    0x10030
+.bss            0x0000000001000928    0x10038
  *(.bss .bss.* .sbss .sbss.*)
- .bss           0x0000000001000890        0x0 shell.o
- .bss           0x0000000001000890        0x0 user.o
- .bss           0x0000000001000890        0x0 user_s.o
- .bss           0x0000000001000890       0x29 common.o
-                0x00000000010008c0                . = ALIGN (0x10)
- *fill*         0x00000000010008b9        0x7 
-                0x00000000010108c0                . = (. + 0x10000)
- *fill*         0x00000000010008c0    0x10000 
-                0x00000000010108c0                __U_stack_top = .
+ .bss           0x0000000001000928        0x0 shell.o
+ .bss           0x0000000001000928        0x0 user.o
+ .bss           0x0000000001000928        0x0 user_s.o
+ .bss           0x0000000001000928       0x29 common.o
+                0x0000000001000960                . = ALIGN (0x10)
+ *fill*         0x0000000001000951        0xf 
+                0x0000000001010960                . = (. + 0x10000)
+ *fill*         0x0000000001000960    0x10000 
+                0x0000000001010960                __U_stack_top = .
                 0x0000000000000001                ASSERT ((. < 0x1800000), too large executable)
 LOAD shell.o
 LOAD user.o
@@ -92,17 +92,17 @@ OUTPUT(shell.elf elf64-littleriscv)
                 0x0000000000000090       0x30 common.o
 
 .debug_rnglists
-                0x0000000000000000       0x55
+                0x0000000000000000       0x51
  .debug_rnglists
-                0x0000000000000000       0x33 shell.o
+                0x0000000000000000       0x2f shell.o
  .debug_rnglists
-                0x0000000000000033       0x22 common.o
+                0x000000000000002f       0x22 common.o
 
-.debug_line     0x0000000000000000      0x86e
- .debug_line    0x0000000000000000      0x134 shell.o
- .debug_line    0x0000000000000134       0xa5 user.o
- .debug_line    0x00000000000001d9       0x66 user_s.o
- .debug_line    0x000000000000023f      0x62f common.o
+.debug_line     0x0000000000000000      0x8d8
+ .debug_line    0x0000000000000000      0x19e shell.o
+ .debug_line    0x000000000000019e       0xa5 user.o
+ .debug_line    0x0000000000000243       0x66 user_s.o
+ .debug_line    0x00000000000002a9      0x62f common.o
 
 .debug_str      0x0000000000000000      0x1e2
  .debug_str     0x0000000000000000      0x1e2 shell.o

@@ -16,3 +16,7 @@ void exit(void) {
     syscall(SYS_EXIT, 0, 0, 0);
     for(;;);
 }
+
+void sleep(int n) { //in seconds
+    
+}

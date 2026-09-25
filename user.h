@@ -10,5 +10,6 @@ void printc(char ch);
 int getc(void);
 void yield(void);
 void exit(void);
+void sleep(int n);
 
 #endif
