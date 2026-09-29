@@ -35,17 +35,6 @@ void kernel_main(void) {
 
     printf("Hello World! RISC-V kernel in development...\n");
     printf("Test numero %d\n", 2);
-    process_init();
-    
-    //proc_a = create_process((uint64_t) proc_a_entry, sizeA);
-    //proc_b = create_process((uint64_t) proc_b_entry, sizeB);
-    
-    create_process(_binary_shell_bin_start, (size_t) _binary_shell_bin_size);
-    
-    yield();
-    PANIC("switched to idle process");
-    
-   
 
     //PANIC("Something went wrong here... ");
     //printf("If you read this then something went even more wrong!");
@@ -57,7 +46,22 @@ void kernel_main(void) {
     //in order to be sure that paddr0 is actually set to the start of free ram the following command can be used:
     //llvm-nm kernel.elf | grep __free_ram__
 
+    process_init();
     
+    //proc_a = create_process((uint64_t) proc_a_entry, sizeA);
+    //proc_b = create_process((uint64_t) proc_b_entry, sizeB);
+    
+   /* create_process(_binary_shell_bin_start, (size_t) _binary_shell_bin_size);
+    
+    yield();
+    reaper();
+    PANIC("switched to idle process"); */
+    
+    for (;;) {
+    create_process(_binary_shell_bin_start, (size_t) _binary_shell_bin_size);
+    yield();      // run userland; idle resumes HERE when nothing is runnable
+    reaper();     // current == idle → reclaim every EXITED slot, safely
+    }
 
     
     for (;;); //infinite loop

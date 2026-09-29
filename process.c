@@ -104,20 +104,26 @@ struct process *create_process(const void *image, size_t image_size) { //pointer
     return proc;
 }
 
-void process_init(void) {
+void process_init(void) { //function called by the kernel that 
     idle_proc = create_process(NULL, (size_t) 0);
     idle_proc->pid = 0; // idle
     current_proc = idle_proc;
 }
+
+void free_process(struct process *proc) {
+    proc->state = PROC_UNUSED;
+}
+
 
 void yield(void) {
     // Search for a runnable process
     struct process *next = idle_proc;
     for (int i = 0; i < PROCS_MAX; i++) {
         struct process *proc = &procs[(current_proc->pid + i) % PROCS_MAX];
-        if (proc->state == PROC_RUNNABLE && proc->pid > 0) {
-            next = proc;
-            break;
+        if (proc->state == PROC_RUNNABLE && proc->pid > 0 && next == idle_proc){
+            next = proc;}
+        if (proc->state == PROC_EXITED && proc != current_proc) {
+            free_process(proc);
         }
     }
 
@@ -139,4 +145,13 @@ int process_id(void) {
 
 void exit_process() {
     current_proc->state = PROC_EXITED;
+}
+
+void reaper(){
+    for (int i = 0; i < PROCS_MAX; i++) {
+    struct process *proc = &procs[(current_proc->pid + i) % PROCS_MAX];
+        if (proc->state == PROC_EXITED && proc != current_proc) {
+            free_process(proc);
+            }
+    }
 }

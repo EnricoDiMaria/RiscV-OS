@@ -22,5 +22,6 @@ void switch_page_table(uint64_t satp_value, uint64_t sscratch_value);
 void delay(int n);
 int process_id(void);
 void exit_process(void);
+void reaper();
 
 #endif
