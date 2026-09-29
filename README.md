@@ -95,14 +95,6 @@ Once in GDB and connected to QEMU, these commands can be used:
 
 Free resources when a process is exited
 
-- [ ] **2. Console input** — the step that turns the shell into a real shell:
-  - [ ] Enable RX interrupts (`IER |= 1` in `UART_init`)
-  - [ ] In the trap handler (`ir == 10` branch), when `LSR & 1` read RBR and push
-        into a second ring buffer (separate from the TX one)
-  - [ ] `SYS_GETCHAR` (returns `-1` if the buffer is empty) + `getchar()` in user space
-  - [ ] Shell main loop: prompt, echo, line parsing
-        (note: QEMU sends `\r` for Enter, not `\n`)
-
 - [ ] **3. `SYS_EXIT` + process reclaim** — mark the exiting process `PROC_UNUSED`
         and switch away from the syscall handler; later, add `free_pages` so the
         allocator can reuse the pages of dead processes.
