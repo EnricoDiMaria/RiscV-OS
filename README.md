@@ -3,6 +3,29 @@
 A bare-metal operating system and bootloader written from scratch for the RISC-V 64-bit architecture, targeting the QEMU virt platform.
 
 ---
+### Build & Run
+A Makefile is provided to compile and run the OS with a single line in the terminal (`make run` to run, `make clean` to clean).
+* To access the QEMU console, the shortcut is `Ctrl+A` followed by `C` (console).
+* To inspect registers, use the `info registers` command: from this section it can be easily seen that the PC is correctly set to a value that is the offset from the RAM start address (`0x80000000`) plus the `kernel_main` function address (at the point of execution).
+* This can be easily verified by disassembling the executable with: `riscv64-elf-objdump -d kernel.elf | less`.
+
+## How to Debug
+QEMU launched in debug mode (command `make debug`, provided in the Makefile) starts a GDB server and stops at the first instruction, waiting for input from the debugger. To connect to the debugger, QEMU will open a port on the network: we will connect to that with another terminal (in the same folder) with this command: `riscv64-elf-gdb kernel.elf`. To connect to the QEMU port we will use `target remote localhost:1234`.
+
+Once in GDB and connected to QEMU, these commands can be used:
+
+* `layout split` — to see the C code, the disassembled code in Assembly, and the command line
+* `b <function>` — to tell GDB to stop once `function` is called (`b` is for breakpoint)
+* `c` — to tell the CPU to continue until the next breakpoint
+* `si` — to tell the CPU to execute the next hardware instruction (this command also works to debug assembly code)
+* `n` — to execute the next C line (if there is a function call, the function gets executed and the debugger stops at the next line)
+* `s` — like `n`, but if there is a function call it gets executed line by line
+* `p <variable>` — to print to the console the current value of the variable
+* `p/x $<register_name>` — to print to the console the current value of the register (`/x` to print in hexadecimal)
+* `x/10c <variable>` — to print to the console the first n (in this case 10) bytes decoded as characters at the address of memory saved in the variable
+
+---
+
 
 ## 1. Overview & Architecture
 
@@ -17,13 +40,6 @@ In `linker.ld` we declare sections to decide where and in what order to put the 
 Now it's time to start writing the bootloader itself. I decided to write it directly in assembly. First of all I need to access the variables declared in the linker. Then I write the procedure called `__start__` (same name as in the linker), where I save the stack pointer (needed to execute any C function), I load `mtvec` with an assembly exception handler address and I call the kernel (in M-mode for now).
 
 In the kernel the first function implemented is `memset` (to set a specific section of memory to a specified value). The function is used right after calling the kernel to initialize at zero the `.bss` section.
-
-### Build & Run
-A Makefile is provided to compile and run the OS with a single line in the terminal (`make run` to run, `make clean` to clean).
-
-* To access the QEMU console, the shortcut is `Ctrl+A` followed by `C` (console).
-* To inspect registers, use the `info registers` command: from this section it can be easily seen that the PC is correctly set to a value that is the offset from the RAM start address (`0x80000000`) plus the `kernel_main` function address (at the point of execution).
-* This can be easily verified by disassembling the executable with: `riscv64-elf-objdump -d kernel.elf | less`.
 
 ---
 
@@ -135,24 +151,6 @@ The `getc` function in the user space works by calling the syscall to receive wh
 
 ### Process Termination & Resource Reclaim
 I want that the resources used by a process that has been exited will be freed by another process or by the idle one before the PANIC. I have to change the for cycle in the `yield` function to not make it possible that the current process can free itself: because in this for loop I will check if a process has been previously exited then a process just exited cannot try to free its own resources. I also added a `reaper` function called by the kernel before the PANIC that kills all the remaining EXITED processes.
-
----
-
-## How to Debug
-
-QEMU launched in debug mode (command `make debug`, provided in the Makefile) starts a GDB server and stops at the first instruction, waiting for input from the debugger. To connect to the debugger, QEMU will open a port on the network: we will connect to that with another terminal (in the same folder) with this command: `riscv64-elf-gdb kernel.elf`. To connect to the QEMU port we will use `target remote localhost:1234`.
-
-Once in GDB and connected to QEMU, these commands can be used:
-
-* `layout split` — to see the C code, the disassembled code in Assembly, and the command line
-* `b <function>` — to tell GDB to stop once `function` is called (`b` is for breakpoint)
-* `c` — to tell the CPU to continue until the next breakpoint
-* `si` — to tell the CPU to execute the next hardware instruction (this command also works to debug assembly code)
-* `n` — to execute the next C line (if there is a function call, the function gets executed and the debugger stops at the next line)
-* `s` — like `n`, but if there is a function call it gets executed line by line
-* `p <variable>` — to print to the console the current value of the variable
-* `p/x $<register_name>` — to print to the console the current value of the register (`/x` to print in hexadecimal)
-* `x/10c <variable>` — to print to the console the first n (in this case 10) bytes decoded as characters at the address of memory saved in the variable
 
 ---
 
