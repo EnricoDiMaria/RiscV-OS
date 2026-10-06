@@ -12,7 +12,6 @@ typedef uint64_t vaddr_t; //virtual memory address
 #define true  1
 #define false 0
 #define NULL  ((void *) 0)
-#define PAGE_SIZE 4096
 
 #define va_list  __builtin_va_list //to not rely on standard libraries we use compiler builtins
 #define va_start __builtin_va_start
