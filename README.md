@@ -152,6 +152,20 @@ The `getc` function in the user space works by calling the syscall to receive wh
 ### Process Termination & Resource Reclaim
 I want that the resources used by a process that has been exited will be freed by another process or by the idle one before the PANIC. I have to change the for cycle in the `yield` function to not make it possible that the current process can free itself: because in this for loop I will check if a process has been previously exited then a process just exited cannot try to free its own resources. I also added a `reaper` function called by the kernel before the PANIC that kills all the remaining EXITED processes.
 
+### Reworking allocation and implementing free
+With the current bump allocator it would be hard or nearly impossible to implement a free function, because my allocation has only a pointer that can only move in a direction, there is no track of what has been allocated and what is free. To keep the bump allocator a bitmap that tracks the pages allocated and not to find where holes were created when deallocating pages could be used but this approach would be pretty inefficient. Because of this I need to rework the allocator and I could use a buddy allocator, that is a power of 2 allocator: if there is a request for the buddy allocator to allocate a chunck of size N, N is rounded up to a power of 2 at first and then it divides by 2 the free memory until a chunk of the correct dimension requested is created. The cost to find a chuck is O(log(n)), but the real issue is that power of 2 allocators makes it harder to deal with big and large continuous blocks and a header cannot be implemented because the size needs to be a power of 2, not a power of 2 - header size. When a block is freed it will join the next free one to create a bigger free block. This means that there is good memory coalescing but everything is logarithmic. So this allocator will not be used to allocate the singular pages but only for allocating bigger chunks of memory: a freelist is needed to keep track if there is a free chunk of a certain power of 2 and if the answer is yes that the chunk will be used, if the answer is no then the next bigger one will be divided. To keep track if a singular chunk of memory is allocated or not a bitmap is needed (which granularity increases as there are more smaller chunks allocated). A bitmap is better than headers because the section of memory allocated could be in user space and because headers are part of the memory allocated it would be possible for the user to corrupt it.
+The cost of deallocating is logarithmic, but the actual cost is for the memory needed for the bitmap map, that is 1 bit per page. But because the bitmap is created as a binary tree, with N pages there would be 2N bits needed, so 2 bits per page. 
+
+To be able to do small allocations and have a o(1) cost it's better to use `slab allocators`, that can allocate a region of a specific size. This allocater works with creating a `slab` with a freelist of linked part of memory that are all the same sizes and there is a pointer to the first free part. The freelist is also used to deallocate: when an object is freed the memory is returned to the slab and the newly freed slot is set as the head of the free list. There is also a counter of used slots in the slab that when reaches zero the entire slab can be returned. Instead of a freelist a bitmap could also be used.
+
+I could actually use just a free list at this point, because I allocate one page at a time, but because I want to implement a file system later on I decided to implemented this allocator right away.
+
+So, the first thing to implement is the bitmap for the buddy allocator that needs 2 bit per pages: because my RAM size is fixed at 128MB and the page dimension is set at 4KB the number of pages is 32000, hence 64000 bits or better 8000 bytes are needed (~ 2 pages).
+
+[Theory on this section: https://youtu.be/DRAHRJEAEso?si=KldMKqTv0GuIFF2H]
+
+
+
 ---
 
 ## Roadmap

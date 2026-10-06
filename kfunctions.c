@@ -47,6 +47,7 @@ int rbx_next(){
     return rbx[rbx_t++];
 }
 
+/* old: not used anymore
 paddr_t alloc_pages(uint64_t n) { //this function allocates n pages of memory and returns the starting address
     static paddr_t next_paddr = (paddr_t) __free_ram__;
     paddr_t paddr = next_paddr;
@@ -58,7 +59,9 @@ paddr_t alloc_pages(uint64_t n) { //this function allocates n pages of memory an
 
     memset((void *) paddr, 0, n * PAGE_SIZE); //the function has to return a clean portion of memory set at zero, because map_page uses a bit of this area of memory in order to declare if the entry is valid or not inizialized
     return paddr;
-}
+}*/
+
+
 
 void panic_printf(const char *str, ...) {
     va_list vargs;
