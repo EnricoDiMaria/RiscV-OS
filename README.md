@@ -164,6 +164,9 @@ So, the first thing to implement is the bitmap for the buddy allocator that need
 
 [Theory on this section: https://youtu.be/DRAHRJEAEso?si=KldMKqTv0GuIFF2H]
 
+> I'm starting to implement a simple `math` library, because with the buddy allocator I needed to perform some math operations and I think it could be useful to start implementing my own library that could come in handy in the future.
+
+
 
 
 ---

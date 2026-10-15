@@ -3,6 +3,7 @@
 
 #include "common.h"
 #include "kernel.h"
+#include "allocator.h"
 
 #define SATP_SV39 ((uint64_t)8 << 60) //in RISC-V 64 the last 4 bits in the sapt register are used to indicate the mode of paging: 8 is SV39
 #define PAGE_V    (1 << 0)   // "Valid" bit (entry is enabled)
