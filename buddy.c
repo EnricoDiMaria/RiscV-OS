@@ -10,21 +10,41 @@ extern uint8_t __bss_start__[]; //"the value at the 0th byte of the .bss section
 extern uint8_t __bss_end__[];
 extern uint8_t __free_ram__[];
 
+#define INDEX(x) ((x)/8)
+#define BIT(x) ((x)%8)
 #define FATHER(x) ((x)/2)
 #define LEFT(x) (2*(x))
 #define RIGHT(x) (2*(x)+1)
 #define BUDDY(x) ((x)^1)
-#define FIRST 
+#define FIRST 1
 
 size_t max_pages = 0;
 uint8_t *buddy_bitmap;
 
+void bitmap_set(uint64_t n){
+    int index = INDEX(n);
+    int offset = BIT(n);
+    buddy_bitmap[index] |= 1<<offset;
+} 
+
+void bitmap_clear(uint64_t n) {
+    int index = INDEX(n);
+    int offset = BIT(n);
+    buddy_bitmap[index] |= 1<<offset;
+}
+
+uint8_t bitmap_get(uint64_t n) {
+    int index = INDEX(n);
+    int offset = BIT(n);
+    return (buddy_bitmap[index] >> offset) & 1;
+}
 
 void buddy_init() {
     max_pages = (__ram_end__ - __ram_start__) / PAGE_SIZE; //to have a power of 2 number of pages I start the tree from ram_start and mark as occupied all the pages until free_ram
-    buddy_bitmap = malloc(1*((max_pages*2)/8)); //it's 2 bits per page (divided by eight because it's in byte so I need a byte every 8 pages)
+    buddy_bitmap = malloc(1*((max_pages*2)/8)); //it's 2 bits per page (divided by eight because it's in byte so I need a byte every 8 pages
 
 }
+
 
 
 paddr_t buddy_alloc_pages(uint64_t order){  //allocates a number of pages equal to 2^order
