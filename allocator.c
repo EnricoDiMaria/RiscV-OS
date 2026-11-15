@@ -6,3 +6,7 @@
 paddr_t alloc_pages(uint64_t n){
     return buddy_alloc_pages(power2exp(n));
 }
+
+void allocator_init(void) {
+    buddy_init();
+}

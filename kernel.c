@@ -31,6 +31,7 @@ extern char _binary_shell_bin_start[], _binary_shell_bin_size[];
 
 void kernel_main(void) {
     memset(__bss_start__, (char) 0, (size_t) (__bss_end__ - __bss_start__));
+    allocator_init();
     PLIC_enable_interrupts_modules();
 
     printf("Hello World! RISC-V kernel in development...\n");
